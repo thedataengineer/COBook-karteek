@@ -6,6 +6,7 @@ Write your code in this editor and press "Run" button to execute it.
 
 *******************************************************************************/
 // frontend/src/App.js (fixed error handling)
+// frontend/src/App.js (cleaned up version)
 import React, { useState, useRef, useEffect } from 'react';
 import { Play, Plus, Trash2, Save, Download, Upload, Code, Terminal, FileText, Share2, MessageSquare, Sparkles, Type, Settings, Users, PlayCircle, StopCircle, ChevronDown, Copy, Link2, Edit3, Hash, Braces, File, Zap, User, Clock, Send, X, Check } from 'lucide-react';
 import Cell from './components/Cell';
@@ -51,7 +52,6 @@ const COBook = () => {
   const [nextId, setNextId] = useState(3);
   const [notebookName, setNotebookName] = useState('Untitled Notebook');
   const [isEditingName, setIsEditingName] = useState(false);
-  const [showShareModal, setShowShareModal] = useState(false);
   const [showAIAssistant, setShowAIAssistant] = useState(false);
   const [selectedCell, setSelectedCell] = useState(null);
   const [collaborators] = useState([
@@ -59,38 +59,37 @@ const COBook = () => {
   ]);
   const [comments, setComments] = useState({});
   const [showComments, setShowComments] = useState({});
-  const [copiedLink, setCopiedLink] = useState(false);
 
   const handleVisualization = async (cellId) => {
-  const cell = cells.find(c => c.id === cellId);
-  if (!cell || cell.type !== 'code') return;
+    const cell = cells.find(c => c.id === cellId);
+    if (!cell || cell.type !== 'code') return;
 
-  try {
-    const response = await fetch('https://cobook-1.onrender.com/api/visualize', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code: cell.content })
-    });
+    try {
+      const response = await fetch('https://cobook-1.onrender.com/api/visualize', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: cell.content })
+      });
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (data.success) {
-      // Open HTML in a new tab
-      const newWindow = window.open('', '_blank');
-      if (newWindow) {
-        newWindow.document.write(data.html);
-        newWindow.document.close();
-        newWindow.document.title = 'COBOL Program Visualization';
+      if (data.success) {
+        // Open HTML in a new tab
+        const newWindow = window.open('', '_blank');
+        if (newWindow) {
+          newWindow.document.write(data.html);
+          newWindow.document.close();
+          newWindow.document.title = 'COBOL Program Visualization';
+        } else {
+          alert('Please allow pop-ups to view the visualization');
+        }
       } else {
-        alert('Please allow pop-ups to view the visualization');
+        alert(`Error: ${data.error || 'Failed to generate visualization'}`);
       }
-    } else {
-      alert(`Error: ${data.error || 'Failed to generate visualization'}`);
+    } catch (err) {
+      alert(`Connection error: ${err.message}`);
     }
-  } catch (err) {
-    alert(`Connection error: ${err.message}`);
-  }
-};
+  };
 
   const addCell = (type = 'code', afterId = null) => {
     const newCell = {
@@ -212,7 +211,6 @@ const COBook = () => {
       return;
     }
 
-    // Show user input in output immediately
     setCells(cells.map(c =>
       c.id === cellId ? {
         ...c,
@@ -235,11 +233,9 @@ const COBook = () => {
       const data = await response.json();
 
       if (data.success) {
-        // Get new output after the input
         const newOutput = data.output || cell.output;
 
         if (data.needsInput) {
-          // Program needs more input
           setCells(cells.map(c =>
             c.id === cellId ? {
               ...c,
@@ -249,7 +245,6 @@ const COBook = () => {
             } : c
           ));
         } else {
-          // Program completed
           const finalOutput = newOutput + `\n${'─'.repeat(50)}\n\nProgram completed\nExit code: 0`;
 
           setCells(cells.map(c =>
@@ -262,7 +257,6 @@ const COBook = () => {
           ));
         }
       } else {
-        // Error occurred
         const errorDetails = data.error || data.stderr || 'Unknown error occurred';
         const errorOutput = (data.output || cell.output) + `\n${'─'.repeat(50)}\n\n❌ Error: ${errorDetails}\n\nStderr: ${data.stderr || 'none'}`;
 
@@ -516,7 +510,6 @@ const COBook = () => {
     }
   };
 
-
   const addComment = (cellId, comment) => {
     setComments({
       ...comments,
@@ -570,12 +563,6 @@ const COBook = () => {
     }
   };
 
-  const copyShareLink = () => {
-    navigator.clipboard.writeText('https://cobook.dev/notebook/abc123');
-    setCopiedLink(true);
-    setTimeout(() => setCopiedLink(false), 2000);
-  };
-
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
@@ -617,14 +604,6 @@ const COBook = () => {
               >
                 <Zap className="w-4 h-4" />
                 <span>AI Assist</span>
-              </button>
-
-              <button
-                onClick={() => setShowShareModal(true)}
-                className="flex items-center space-x-2 text-gray-700 hover:bg-gray-100 px-4 py-2 rounded-lg text-sm font-medium transition-colors border border-gray-300"
-              >
-                <Link2 className="w-4 h-4" />
-                <span>Share</span>
               </button>
 
               <div className="flex items-center space-x-2 bg-gray-100 rounded-lg px-3 py-2">
@@ -712,10 +691,10 @@ const COBook = () => {
                   onAddCell={addCell}
                   onShowAIAssistant={showAIAssistantForCell}
                   onToggleVisualization={handleVisualization}
-                onProvideInput={provideInputToCell}
-                comments={comments}
-                onToggleComments={toggleComments}
-                onAddComment={addComment}
+                  onProvideInput={provideInputToCell}
+                  comments={comments}
+                  onToggleComments={toggleComments}
+                  onAddComment={addComment}
                 />
               ) : (
                 <TextCell
@@ -729,14 +708,10 @@ const COBook = () => {
                   onAddComment={addComment}
                 />
               )}
-             
-              {/* Visualization Panel */}
-             
             </div>
           ))}
         </div>
       </div>
-
 
       <AIAssistant
         isVisible={showAIAssistant}
@@ -748,68 +723,6 @@ const COBook = () => {
         onConvertToPython={handleConvertToPython}
         onSummarizeProgram={handleSummarizeProgram}
       />
-
-      {showShareModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md">
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <div className="flex items-center space-x-3">
-                <div className="bg-indigo-100 p-2 rounded-lg">
-                  <Share2 className="w-5 h-5 text-indigo-600" />
-                </div>
-                <h2 className="text-xl font-semibold text-gray-900">Share Notebook</h2>
-              </div>
-              <button
-                onClick={() => setShowShareModal(false)}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="p-6 space-y-4">
-              <div>
-                <label className="text-sm font-medium text-gray-700 block mb-2">Share link</label>
-                <div className="flex space-x-2">
-                  <input
-                    type="text"
-                    value="https://cobook.dev/notebook/abc123"
-                    readOnly
-                    className="flex-1 px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg text-sm"
-                  />
-                  <button
-                    onClick={copyShareLink}
-                    className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium transition-colors flex items-center space-x-1"
-                  >
-                    {copiedLink ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                    <span>{copiedLink ? 'Copied!' : 'Copy'}</span>
-                  </button>
-                </div>
-              </div>
-
-              <div>
-                <label className="text-sm font-medium text-gray-700 block mb-2">Collaborators</label>
-                <div className="space-y-2">
-                  {collaborators.map(collab => (
-                    <div key={collab.id} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                      <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold" style={{backgroundColor: collab.color}}>
-                        {collab.name[0]}
-                      </div>
-                      <span className="text-sm font-medium text-gray-700">{collab.name}</span>
-                      {collab.active && (
-                        <span className="ml-auto text-xs text-green-600 font-medium flex items-center space-x-1">
-                          <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                          <span>Active</span>
-                        </span>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       <div className="max-w-6xl mx-auto px-6 py-8 text-center">
         <p className="text-sm text-gray-500">COBook - Interactive COBOL Development Environment</p>
