@@ -250,6 +250,6 @@ Once both servers are running:
 
 
 # 👥 Contributors
-### Ragahvendra Pappu, Satish Pati, Dr.Sridhar Chimalakonda
+### Raghavendra Pappu, Satish Pati, Dr.Sridhar Chimalakonda
 
 
