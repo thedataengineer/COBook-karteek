@@ -247,7 +247,7 @@ Once both servers are running:
 <img width="1536" height="891" alt="image" src="https://github.com/user-attachments/assets/c7b08534-191b-4041-be1b-bf9309030ba9" />
 
 # 🎥 Demo Video
-
+`https://youtu.be/kjdzJsCq_Lc`
 
 # 👥 Contributors
 ### Raghavendra Pappu, Satish Pati, Dr.Sridhar Chimalakonda
