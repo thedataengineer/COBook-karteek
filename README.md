@@ -102,6 +102,55 @@ Inspired by the success of computational notebooks like Jupyter and Google Colab
 ## 🚀 Usage
 
 COBook consists of a React-based frontend and a Node.js/Express backend with GnuCOBOL integration.
+## How to Use *COBook*
+
+Follow these steps to get started:
+
+1. Create a new notebook or load an existing one.
+2. Add code cells using the **"Code Cell"** button or text cells using the **"Text Cell"** button.
+3. Write COBOL code in code cells with proper syntax highlighting.
+4. Execute cells individually by clicking the **"Run Cell"** button on each code cell, or run all cells using **"Run All"**.
+5. View compilation results and program output below each code cell.
+6. Click the **"Toggle Visualization"** button on each code cell to view:
+
+   * Flowcharts
+   * Data flow diagrams
+   * Memory layouts
+   * Division structures
+   * Execution flows
+7. Use AI assistance by clicking the **"AI Assist"** button and selecting a feature.
+8. Save your notebook for later use by clicking the **"Save"** button.
+
+## Text Cell Usage Guide
+
+In text cells, you can format your content using the following Markdown syntax:
+
+* Use `**bold text**` for **bold text**
+* Use `*italic text*` for *italic text*
+* Use `` `inline code` `` for inline code snippets
+
+### Headings
+
+* `# Heading` → Large heading
+* `## Subheading` → Medium heading
+* `### Small Heading` → Small heading
+
+### Lists
+
+* Use `- item` to create bulleted lists
+
+### Paragraphs and Line Breaks
+
+* Press **Enter once** for a new line within the same paragraph
+* Press **Enter twice** (leave a blank line) to create a new paragraph
+
+### Editing Tips
+
+* Click anywhere inside the text cell to enter edit mode
+* Click outside the cell to exit edit mode
+* Markdown formatting is preserved when you re-edit
+
+You can combine these features to create well-structured documentation with headings, lists, and formatted text.
 
 ### 🌐 Live Demo
 
