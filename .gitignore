@@ -1,7 +1,12 @@
 COBook/
 
-frontend/.env
-backend/.env
+# Local credentials and environment files
+**/.env
+**/.env.*
+!.env.example
+
+# Local runtime output
+backend/temp/
 
 
 
